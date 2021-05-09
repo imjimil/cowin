@@ -4860,6 +4860,11 @@
   "resolved" "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz"
   "version" "8.2.0"
 
+"downloadjs@^1.4.7":
+  "integrity" "sha1-9p+W+UDg0FU9rCkROYZaPNAQHjw="
+  "resolved" "https://registry.npmjs.org/downloadjs/-/downloadjs-1.4.7.tgz"
+  "version" "1.4.7"
+
 "duplexer@^0.1.1":
   "integrity" "sha1-rOb/gIwc5mtX0ev5eXessCM0z8E="
   "resolved" "https://registry.yarnpkg.com/duplexer/-/duplexer-0.1.1.tgz"

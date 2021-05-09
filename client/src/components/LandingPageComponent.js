@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import sha256 from 'js-sha256';
 import axios from 'axios';
+import download from 'downloadjs';
 
 function LandingPageComponent() {
 
@@ -10,7 +11,7 @@ function LandingPageComponent() {
     const [OTP, setOTP] = useState("");
     const [Token, setToken] = useState("");
     const [toggle, settoggle] = useState(false);
-    const [Beneficiaries, setBeneficiaries] = useState([])
+    const [Beneficiaries, setBeneficiaries] = useState([]);
 
     const onChangeHandler = event => {
         setPhone(event.target.value);
@@ -93,10 +94,39 @@ function LandingPageComponent() {
         .catch(err => alert(err))
     }
 
+    // for fetching certificate COWIN documation api doesn't work (public or private). I found this from network tab of official cowin website.
+    function fetchCertificate(refId) {
+        axios.get('https://www.cowin.gov.in/api/v2/registration/certificate/download', {
+            params: {
+                "beneficiary_reference_id": refId
+            }, 
+            headers: {
+                Authorization: 'Bearer ' + Token.token,
+                'Accept': "application/pdf"
+            }, responseType: 'blob'
+        })
+        .then(res => {
+            console.log(res.data);
+            //setCertificate(res.data);
+            download(res.data, "certificate.pdf", "application/pdf");
+         })
+         .catch(err => console.log(err));
+    }
+
     return (
         <>
-            <div className="text-center">
-                <h1 className="font-weight-lighter"><a href="/" className="text-decoration-none">Cowin Info</a></h1>
+            <div className="text-center bg-dark">
+                <h1 className="font-weight-light"><a href="/" className="text-decoration-none">Cowin Info</a></h1>
+            </div>
+            {/* info */}
+            <div className="row">
+                <div className="col-12 col-md-4 offset-md-4 ">
+                    <div className="font-weight-bold text-justify text-dark list-group-item-warning">
+                        <li>This is third-party application to check your COWIN related information. It doesn't take your data in any way or collects any information about your visits.
+                        Make sure you trust this app before submitting your OTP.</li>
+                        <li>Go to <a href="https://www.cowin.gov.in/home" rel="noopener noreferrer" className="text-decoration-none">Official Site</a> if you have any doubts.</li>
+                    </div>
+                </div>
             </div>
             {!Form && <div style={{width:'95%', margin:'20px auto'}}>
                 <div className="row">
@@ -130,7 +160,7 @@ function LandingPageComponent() {
                     <div className="mt-3 col-md-4 btn text-info" onClick={() => setForm(!Form)}>click here to enter mobile number again</div>
                 </div>
             </div>}
-                <div className="card m-2">
+                <div className="card m-2 d-none d-sm-block">
                     <div className="col-12">your token - {Token.token ? Token.token : 'Enter Mobile and OTP first'}</div>
                 </div>
                 {Token.token && <div className="card border-0 mt-3">
@@ -152,8 +182,9 @@ function LandingPageComponent() {
                                 <div>Given ID No. {doc.photo_id_number}</div>
                                 <div className="text-primary font-weight-bolder">Vaccine: {doc.vaccine}</div>
                                 <div className="text-primary font-weight-bolder">Vaccination Status: {doc.vaccination_status}</div>
-                                <div>Appointment for 1st dose: {doc.dose1_date}</div>
+                                <div>Appointment for 1st dose: {doc.dose1_date ? doc.dose1_date : "Haven't Booked Yet"}</div>
                                 <div>Appointment for 2nd dose: {doc.dose2_date ? doc.dose2_date : "Havn't Booked Yet"}</div>
+                                <button className="btn btn-primary mt-2" onClick={() => fetchCertificate(doc.beneficiary_reference_id)}>Download Certificate</button>                              
                                 </div>
                             </div>
                             </div>
