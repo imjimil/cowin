@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import sha256 from 'js-sha256';
 import axios from 'axios';
 import download from 'downloadjs';
+import { Link } from 'react-router-dom';
 
 function LandingPageComponent() {
 
@@ -118,9 +119,13 @@ function LandingPageComponent() {
             <div className="text-center bg-dark">
                 <h1 className="font-weight-light"><a href="/" className="text-decoration-none">Cowin Info</a></h1>
             </div>
+            <div className="float-md-right d-none d-md-block mr-4 mt-2">
+                <Link to='/slots'><button className="btn btn-primary">Check Slots</button></Link>
+            </div>
+
             {/* info */}
-            <div className="row">
-                <div className="col-12 col-md-4 offset-md-4 ">
+            <div className="row m-0">
+                <div className="col-12 col-md-6 offset-md-4">
                     <div className="font-weight-bold text-justify text-dark list-group-item-warning">
                         <li>This is third-party application to check your COWIN related information. It doesn't take your data in any way or collects any information about your visits.
                         Make sure you trust this app before submitting your OTP.</li>
@@ -144,6 +149,11 @@ function LandingPageComponent() {
                 </div>
             </div>}
 
+            <div className="d-none d-block d-sm-block d-md-none mt-3" style={{width:'95%', margin:'20px auto'}}>
+                <h3 className="">Check Available Slots</h3>
+                <div className="mt-2"><Link to='/slots'><button className="btn btn-primary">Check Slots</button></Link></div>
+            </div>
+
             {Form && <div style={{width:'95%', margin:'20px auto'}}>
             <div className="row">
                     <div className="col-md-2">
@@ -161,7 +171,7 @@ function LandingPageComponent() {
                 </div>
             </div>}
                 <div className="card m-2 d-none d-sm-block">
-                    <div className="col-12">your token - {Token.token ? Token.token : 'Enter Mobile and OTP first'}</div>
+                    <div className="col-12">Your token: {Token.token ? <label className='text-secondary'>{Token.token}</label> : <label className='text-secondary'>Enter mobile no. and OTP first</label> }</div>
                 </div>
                 {Token.token && <div className="card border-0 mt-3">
                     <div className="text-center">
@@ -184,7 +194,7 @@ function LandingPageComponent() {
                                 <div className="text-primary font-weight-bolder">Vaccination Status: {doc.vaccination_status}</div>
                                 <div>Appointment for 1st dose: {doc.dose1_date ? doc.dose1_date : "Haven't Booked Yet"}</div>
                                 <div>Appointment for 2nd dose: {doc.dose2_date ? doc.dose2_date : "Havn't Booked Yet"}</div>
-                                <button className="btn btn-primary mt-2" onClick={() => fetchCertificate(doc.beneficiary_reference_id)}>Download Certificate</button>                              
+                                {doc.dose1_date && <button className="btn btn-primary mt-2" onClick={() => fetchCertificate(doc.beneficiary_reference_id)}>Download Certificate</button>}                          
                                 </div>
                             </div>
                             </div>
