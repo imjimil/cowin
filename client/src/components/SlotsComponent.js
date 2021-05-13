@@ -55,7 +55,7 @@ function SlotsComponent() {
             return(Districts.map(data => ({ label:data.district_name, value:data.district_id })))
       }
 
-      const options = [
+      const options = [        
         { value: 'Paid', label: 'Paid' },
         { value: 'Free', label: 'Free' }
       ]
@@ -81,6 +81,9 @@ function SlotsComponent() {
       const handleVaccine = e => {
           setVaccine(e.value)
       }
+      // eslint-disable-next-line no-lone-blocks
+      {/* Using this is disble keyboard from popping up in mobile which makes is easier to choose date */}
+      const onDatepickerRef = (el) => { if (el && el.input) { el.input.readOnly = true; } }
 
       const handleSubmit = e => {
           e.preventDefault();
@@ -139,44 +142,42 @@ function SlotsComponent() {
             </tr>
           );
       })
-
+      
       const renderWeekTableBody = WeekCenters.map((value, index) => {
           return(
-              <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td className="p-0">
-                      {value.sessions.map((val) => (
-                      <tr><td>{val.date}</td></tr>
-                      ))}
-                  </td>
-                  <td className='p-0'>
-                      {value.sessions.map((val) => (
-                        <tr><td>{val.available_capacity}</td></tr>
-                       ))}
-                  </td>
-                  <td className='p-0'>
-                      {value.sessions.map((val) => (
-                        <tr><td>{val.vaccine}</td></tr>
-                       ))}
-                  </td>
-                  <td className='p-0'>
-                      {value.sessions.map((val) => (
-                        <tr><td>{val.min_age_limit + "+"}</td></tr>
-                       ))}
-                  </td>
-                  <td>{value.name}</td>
-                  <td>{value.address}</td>
-                  <td>{value.pincode}</td>
-                  <td>{value.fee_type}</td>
-              </tr>
+            <tr key={index}>
+            <td>{index + 1}</td>
+            <td className="p-0">
+                {value.sessions.map((val) => (
+                <tr><td>{val.date}</td></tr>
+                ))}
+            </td>
+            <td className='p-0'>
+                {value.sessions.map((val) => (
+                  <tr><td>{val.available_capacity <= 0 ? <div className="badge badge-danger">No Slots</div> : <div className="text-success font-weight-bold">{val.available_capacity}</div>}</td></tr>
+                 ))}
+            </td>
+            <td className='p-0'>
+                {value.sessions.map((val) => (
+                  <tr><td className="font-weight-bold">{val.vaccine}</td></tr>
+                 ))}
+            </td>
+            <td className='p-0'>
+                {value.sessions.map((val) => (
+                  <tr><td>{val.min_age_limit + "+"}</td></tr>
+                 ))}
+            </td>
+            <td className="font-weight-bold">{value.name}</td>
+            <td style={{maxWidth: '200px'}}>{value.address}</td>
+            <td>{value.pincode}</td>
+            <td>{value.fee_type}</td>
+        </tr>
           );
       })
     
     return (
         <>
-        <div>
-           <h2 className="text-center font-weight-light bg-dark text-primary p-2">Check Locations and Slots</h2>
-        </div>
+        <h3 className="text-center m-2 text-primary">Availability by District</h3>
         <div style={{width:'95%', margin:'20px auto'}}>
             <div className="row">
                 <div className="col-md-4 offset-md-2">
@@ -248,7 +249,7 @@ function SlotsComponent() {
             <div className="row">
                     {!Checked && <div className="offset-3 col-6 offset-md-2 col-md-4">
                         <div className="form-outline">
-                            <ReactDatePicker closeOnScroll={true} dateFormat="dd/MM/yyyy" selected={StartDate} onChange={date => setStartDate(date)} className="form-control" />
+                            <ReactDatePicker closeOnScroll={true} dateFormat="dd/MM/yyyy" selected={StartDate} onChange={date => setStartDate(date)} className="form-control" ref={(el)=> onDatepickerRef(el)}/>
                             {/* <input type="date" onChange={date => setStartDate(date)} className="form-control" /> */}
                         <div className="form-label font-weight-bold">Date</div>
                         </div>
@@ -263,7 +264,7 @@ function SlotsComponent() {
 
         {/* Show results */}
 
-        {Centers.length > 0  && 
+        {Centers.length > 0  && Checked &&
         <div style={{width:'95%', margin:'20px auto'}}>
             <table className="table table-hover table-responsive-sm table-responsive-md">
                 <thead className="thead-dark">
@@ -279,14 +280,14 @@ function SlotsComponent() {
                     <th scope="col">Fees</th>
                     </tr>
                 </thead>
-                <tbody>{Checked ? renderTableBody : renderWeekTableBody}</tbody>
+                <tbody>{renderTableBody}</tbody>
             </table>
             {renderTableBody.length ? "" : <h3 className="text-center">No Results Found!</h3>}
         </div>}
 
         {/* week table */}
 
-        {WeekCenters.length > 0  && 
+        {WeekCenters.length > 0  && !Checked &&
         <div style={{width:'95%', margin:'20px auto'}}>
             <table className="table table-hover table-responsive-sm table-responsive-md">
                 <thead className="thead-dark">

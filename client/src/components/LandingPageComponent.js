@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import sha256 from 'js-sha256';
 import axios from 'axios';
 import download from 'downloadjs';
-import { Link } from 'react-router-dom';
 
 function LandingPageComponent() {
 
@@ -13,6 +12,7 @@ function LandingPageComponent() {
     const [Token, setToken] = useState("");
     const [toggle, settoggle] = useState(false);
     const [Beneficiaries, setBeneficiaries] = useState([]);
+    const [Hide, setHide] = useState(false)
 
     const onChangeHandler = event => {
         setPhone(event.target.value);
@@ -73,8 +73,10 @@ function LandingPageComponent() {
             .then(response => {
                 console.log(response);
                 setToken(response);
-                alert("OTP Valid your token is" + response.token);
+                alert("OTP Valid");
                 setOTP("")
+                setForm(!Form)
+                setHide(!Hide)
             })
             .catch(error => alert(error));
         }
@@ -116,16 +118,9 @@ function LandingPageComponent() {
 
     return (
         <>
-            <div className="text-center bg-dark">
-                <h1 className="font-weight-light"><a href="/" className="text-decoration-none">Cowin Info</a></h1>
-            </div>
-            <div className="float-md-right d-none d-md-block mr-4 mt-2">
-                <Link to='/slots'><button className="btn btn-primary">Check Slots</button></Link>
-            </div>
-
             {/* info */}
-            <div className="row m-0">
-                <div className="col-12 col-md-6 offset-md-4">
+            <div className="row m-0 mt-3">
+                <div className="col-12 col-md-6 offset-md-3">
                     <div className="font-weight-bold text-justify text-dark list-group-item-warning">
                         <li>This is third-party application to check your COWIN related information. It doesn't take your data in any way or collects any information about your visits.
                         Make sure you trust this app before submitting your OTP.</li>
@@ -133,7 +128,15 @@ function LandingPageComponent() {
                     </div>
                 </div>
             </div>
-            {!Form && <div style={{width:'95%', margin:'20px auto'}}>
+
+            {Hide && <div className="m-3">
+                <nav aria-label="breadcrumb">
+                    <ol className="breadcrumb">
+                        <li className="breadcrumb-item"><a href='/'>Back to Home</a></li>
+                    </ol>
+                </nav>
+            </div>}
+            {!Form && !Hide && <div style={{width:'95%', margin:'20px auto'}}>
                 <div className="row">
                     <div className="col-md-2">
                         <div className="font-weight-bold">Mobile No.</div>
@@ -149,12 +152,7 @@ function LandingPageComponent() {
                 </div>
             </div>}
 
-            <div className="d-none d-block d-sm-block d-md-none mt-3" style={{width:'95%', margin:'20px auto'}}>
-                <h3 className="">Check Available Slots</h3>
-                <div className="mt-2"><Link to='/slots'><button className="btn btn-primary">Check Slots</button></Link></div>
-            </div>
-
-            {Form && <div style={{width:'95%', margin:'20px auto'}}>
+            {Form && !Hide && <div style={{width:'95%', margin:'20px auto'}}>
             <div className="row">
                     <div className="col-md-2">
                         <div className="font-weight-bold">OTP</div>
@@ -165,15 +163,16 @@ function LandingPageComponent() {
                 </div>
                 <div className="row">
                     <div className="col-md-2">
-                    <button className="btn btn-primary mt-3" type="submit" onClick={submitOTP}>Submit</button>
+                    <button className="btn btn-primary mt-3" type="submit" onClick={submitOTP}>Submit OTP</button>
                     </div>
-                    <div className="mt-3 col-md-4 btn text-info" onClick={() => setForm(!Form)}>click here to enter mobile number again</div>
+                    <div className="mt-md-3 col-md-4 btn text-info" onClick={() => setForm(!Form)}>Click here to enter mobile number again</div>
                 </div>
             </div>}
-                <div className="card m-2 d-none d-sm-block">
-                    <div className="col-12">Your token: {Token.token ? <label className='text-secondary'>{Token.token}</label> : <label className='text-secondary'>Enter mobile no. and OTP first</label> }</div>
+                <div className="m-2 d-none d-sm-block">
+                    <div className="col-12 card">Your token: {Token.token ? <label className='text-secondary'>{Token.token}</label> : <label className='text-secondary'>Enter mobile no. and OTP first</label> }</div>
                 </div>
-                {Token.token && <div className="card border-0 mt-3">
+                {Token.token && 
+                <div className="card border-0 mt-3">
                     <div className="text-center">
                         <button className="btn btn-primary" onClick={seeInfo}>See Beneficiaries</button>
                     </div>
@@ -182,16 +181,16 @@ function LandingPageComponent() {
                 <>
                     {Beneficiaries.map((doc, index) => (
                         <React.Fragment key={index}>
-                            <div className="row">
+                            <div className="row mt-3 mb-3" style={{width:'95%', margin:'0px 5px auto'}}>
                             <div className="col-12 col-md-4">
                             <div className="card">
                                 <div className="card-header font-weight-bold">{doc.name}</div>
-                                <div className="card-body">Gender: {doc.gender}
+                                <div className="card-body font-weight-bold">Gender: {doc.gender}
                                 <div>Mobile: XXXXXX{doc.mobile_number}</div>
                                 <div>ID: {doc.beneficiary_reference_id}</div>
                                 <div>Given ID No. {doc.photo_id_number}</div>
-                                <div className="text-primary font-weight-bolder">Vaccine: {doc.vaccine}</div>
-                                <div className="text-primary font-weight-bolder">Vaccination Status: {doc.vaccination_status}</div>
+                                <div className="text-primary">Vaccine: {doc.vaccine}</div>
+                                <div className="text-primary">Vaccination Status: {doc.vaccination_status}</div>
                                 <div>Appointment for 1st dose: {doc.dose1_date ? doc.dose1_date : "Haven't Booked Yet"}</div>
                                 <div>Appointment for 2nd dose: {doc.dose2_date ? doc.dose2_date : "Havn't Booked Yet"}</div>
                                 {doc.dose1_date && <button className="btn btn-primary mt-2" onClick={() => fetchCertificate(doc.beneficiary_reference_id)}>Download Certificate</button>}                          
