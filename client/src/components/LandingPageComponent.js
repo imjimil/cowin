@@ -179,27 +179,27 @@ function LandingPageComponent() {
                 </div>}
                 {toggle &&
                 <>
+                    <div className="row mt-3 mb-3" style={{width:'95%', margin:'0px 5px auto'}}>
                     {Beneficiaries.map((doc, index) => (
                         <React.Fragment key={index}>
-                            <div className="row mt-3 mb-3" style={{width:'95%', margin:'0px 5px auto'}}>
                             <div className="col-12 col-md-4">
                             <div className="card">
                                 <div className="card-header font-weight-bold">{doc.name}</div>
                                 <div className="card-body font-weight-bold">Gender: {doc.gender}
-                                <div>Mobile: XXXXXX{doc.mobile_number}</div>
-                                <div>ID: {doc.beneficiary_reference_id}</div>
-                                <div>Given ID No. {doc.photo_id_number}</div>
-                                <div className="text-primary">Vaccine: {doc.vaccine}</div>
-                                <div className="text-primary">Vaccination Status: {doc.vaccination_status}</div>
-                                <div>Appointment for 1st dose: {doc.dose1_date ? doc.dose1_date : "Haven't Booked Yet"}</div>
-                                <div>Appointment for 2nd dose: {doc.dose2_date ? doc.dose2_date : "Havn't Booked Yet"}</div>
-                                {doc.dose1_date && <button className="btn btn-primary mt-2" onClick={() => fetchCertificate(doc.beneficiary_reference_id)}>Download Certificate</button>}                          
+                                    <div>Mobile: XXXXXX{doc.mobile_number}</div>
+                                    <div>ID: {doc.beneficiary_reference_id}</div>
+                                    <div>Given ID No. {doc.photo_id_number}</div>
+                                    <div className="text-primary">Vaccine: {doc.vaccine}</div>
+                                    <div className="text-primary">Vaccination Status: {doc.vaccination_status}</div>
+                                    <div>Appointment for 1st dose: {doc.dose1_date ? doc.dose1_date : "Haven't Booked Yet"}</div>
+                                    <div>Appointment for 2nd dose: {doc.dose2_date ? doc.dose2_date : "Havn't Booked Yet"}</div>
+                                    {doc.dose1_date && <button className="btn btn-primary mt-2" onClick={() => fetchCertificate(doc.beneficiary_reference_id)}>Download Certificate</button>}                          
                                 </div>
-                            </div>
                             </div>
                             </div>
                         </React.Fragment>
                     ))}
+                    </div>
                 </>
                 }
             </>
